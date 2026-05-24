@@ -1,0 +1,518 @@
+{
+  "name": "Taller 4 n8n",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": [
+          "message"
+        ],
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        -512,
+        -64
+      ],
+      "id": "dac805b2-d0a9-45eb-94c3-a1a3950b63a4",
+      "name": "Telegram Trigger",
+      "webhookId": "88089b41-5f97-4c0b-ac04-e9205806abbd",
+      "credentials": {
+        "telegramApi": {
+          "id": "8gkTJEvxwMmsUC5x",
+          "name": "Telegram account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "1209000b-1183-4743-93d6-6dc8766859f1"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 2
+                },
+                "conditions": [
+                  {
+                    "id": "5a5d0d06-5422-4750-910b-1f4bec227945",
+                    "leftValue": "={{ $json.message.text }}",
+                    "rightValue": "/start",
+                    "operator": {
+                      "type": "string",
+                      "operation": "exists",
+                      "singleValue": true
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.3,
+      "position": [
+        -304,
+        -64
+      ],
+      "id": "cf2cf944-9709-46b6-981e-6fcd69aa35de",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.message.chat.id }}",
+        "text": "Muy buenas!",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -64,
+        -160
+      ],
+      "id": "89a34646-3ebd-4a73-90bf-3440fd0aedec",
+      "name": "Send a text message",
+      "webhookId": "c8337621-fe69-45eb-8f67-59d9c18a806a",
+      "credentials": {
+        "telegramApi": {
+          "id": "8gkTJEvxwMmsUC5x",
+          "name": "Telegram account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "url": "https://api.giphy.com/v1/stickers/random?api_key=nQcponiqqeU4XeitzHegeD4GobXfi4Y5&tag=sd&rating=pg",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        144,
+        -160
+      ],
+      "id": "f805d620-f0e3-4e5d-b935-8585b3c4066b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.data.images.original.url }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        352,
+        -160
+      ],
+      "id": "969cf428-1a2e-4f6a-95a2-72024595e739",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "operation": "sendSticker",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        560,
+        -160
+      ],
+      "id": "92d00dd3-d566-46ca-bbad-86087b133f45",
+      "name": "Send a sticker",
+      "webhookId": "9d602768-70a9-4679-9112-3c5c91c49c19",
+      "credentials": {
+        "telegramApi": {
+          "id": "8gkTJEvxwMmsUC5x",
+          "name": "Telegram account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "sendChatAction",
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}"
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -96,
+        32
+      ],
+      "id": "0c234e60-e64e-487a-be69-3bb30e49ecf2",
+      "name": "Send a chat action",
+      "webhookId": "7cbeed95-77c4-40c4-8ab8-31d12dcdca1b",
+      "credentials": {
+        "telegramApi": {
+          "id": "8gkTJEvxwMmsUC5x",
+          "name": "Telegram account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"text\": \"{{ $('Telegram Trigger').item.json.message.text }}\",\n  \"type\": \"message\",\n  \"ai\": \"\",\n}\n  ",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        112,
+        32
+      ],
+      "id": "62578724-3cce-43d6-961e-42f11dd3cac0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('Telegram Trigger').item.json.message.text }}",
+        "options": {
+          "systemMessage": "Eres un agente que ayuda a las personas con problemas generales.\nSiempre responde a los mensajes utilizando la herramienta de telegram."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        560,
+        32
+      ],
+      "id": "296d293d-6894-4aeb-b4da-d1f8c654e33d",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "jsCode": "return{\n  text:$input.first().json.text,\ntype:$input.first().json.type,\nai: $input.first().json.ai\n}"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        320,
+        32
+      ],
+      "id": "596c6b16-e7f5-43f1-9059-786ea829864f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Text', ``, 'string') }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegramTool",
+      "typeVersion": 1.2,
+      "position": [
+        816,
+        176
+      ],
+      "id": "1bd9489d-f767-404d-863b-c6bb0698c111",
+      "name": "Send a text message in Telegram",
+      "webhookId": "4fe61455-0d96-442b-885c-56f10e0bff64",
+      "credentials": {
+        "telegramApi": {
+          "id": "8gkTJEvxwMmsUC5x",
+          "name": "Telegram account 11"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        224
+      ],
+      "id": "b936013c-2328-4463-acb9-4270bf524881",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOllama",
+      "typeVersion": 1,
+      "position": [
+        432,
+        208
+      ],
+      "id": "2ab81bf6-a10f-4de8-83d2-43421a53ccfe",
+      "name": "Ollama Chat Model",
+      "credentials": {
+        "ollamaApi": {
+          "id": "DYSG4uNtxolD2rIR",
+          "name": "Ollama account 10"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "94345b65-398d-4ff9-b9cd-4481bcf2eecd",
+              "name": "output",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        912,
+        32
+      ],
+      "id": "b1c7274e-7bf0-4686-a0a6-20cf109c88a1",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "jsCode": "\nconst output = $json.output;\nlet text = output;\nif (typeof output === 'string' && output.includes (\"value\")) {\nconst match = output.match(/\"value\":\\s*\"([^\"]+)\"/);\nif (match) text = match[1];\n}\nreturn { text: text };"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1120,
+        32
+      ],
+      "id": "f235e118-fc90-4f84-9f1d-192360045f14",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.from.id }}",
+        "text": "={{ $json.text }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1328,
+        32
+      ],
+      "id": "120c27cf-9747-46a8-8e56-5dad55896732",
+      "name": "Send a text message1",
+      "webhookId": "14048977-5279-445a-b6ed-e4f810d33287",
+      "credentials": {
+        "telegramApi": {
+          "id": "8gkTJEvxwMmsUC5x",
+          "name": "Telegram account 11"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a chat action",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        [
+          {
+            "node": "Send a sticker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a chat action": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a text message in Telegram": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Ollama Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields1": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Send a text message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "a2c6f7c2-35bf-4404-a8e0-0958c80a3a06",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e3552c258da0afcd14cfe3071e7f310d76d67792b30c0a420920397f0f1e93fb"
+  },
+  "id": "arVNq4guwWFrkUdo",
+  "tags": []
+}
